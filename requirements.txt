@@ -1,0 +1,7 @@
+streamlit
+reportlab
+langchain
+langchain-community
+langchain-core==0.1.53
+langchain-openai
+requests
