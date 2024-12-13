@@ -472,7 +472,7 @@ elif st.session_state.page == 3:
                 # Add a Remove button for each skill
                 if st.button("Remove", key=f"remove_skill_{i}"):
                     st.session_state.skills.pop(i)
-                    st.experimental_rerun()  # Refresh the app to reflect the removal
+                    st.rerun()  # Refresh the app to reflect the removal
 
     with right_col:
         # Live Preview
