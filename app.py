@@ -146,10 +146,10 @@ def generate_pdf(data,font_family,text_color,theme_color):
         {data}
         <div class="footer">
             <div class="date">
-                <strong>Date:</strong> {date}
+                <strong>Date:</strong>
             </div>
             <div class="signature">
-                <strong>Signature:</strong> {signature_name}
+                <strong>Signature:</strong>
             </div>
         </div>
     </body>
