@@ -114,15 +114,44 @@ def generate_pdf(data,font_family,text_color,theme_color):
             }}
             body {{
                 margin: 0; 
-                padding: 0; 
+                padding: 20px; 
                 font-family: {font_family}; 
                 color: {text_color};
                 background-color: {theme_color};
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                height: 100%;
+            }}
+            .footer {{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: absolute;
+                bottom: 20px;
+                width: 90%;
+                padding: 0 5%;
+            }}
+            .date {{
+                text-align: left;
+                font-size: 12px;
+            }}
+            .signature {{
+                text-align: right;
+                font-size: 12px;
             }}
         </style>
     </head>
     <body>
         {data}
+        <div class="footer">
+            <div class="date">
+                <strong>Date:</strong> {date}
+            </div>
+            <div class="signature">
+                <strong>Signature:</strong> {signature_name}
+            </div>
+        </div>
     </body>
     </html>
     """
