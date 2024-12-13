@@ -474,26 +474,37 @@ elif st.session_state.page == 3:
             height=120,
         )
 
-        # Skills Input
+        # Initialize Streamlit session state for skills
+        if "skills" not in st.session_state:
+            st.session_state.skills = []
+        
+        # Add Skills Form
         st.header("Add Your Skills")
         with st.form("add_skills_form"):
             skill_name = st.text_input("Skill Name")
-            skill_rating = st.slider("Skill Rating (1 to 5 Stars)", 1, 5, 3)
+            skill_rating = st.slider("Skill Rating (1.0 to 5.0 Stars)", 1.0, 5.0, 3.0, step=0.1)  # Allow decimal ratings
             if st.form_submit_button("Add Skill"):
-                st.session_state.skills.append({"name": skill_name, "rating": skill_rating})
+                if skill_name:  # Ensure skill name is not empty
+                    st.session_state.skills.append({"name": skill_name, "rating": skill_rating})
+                else:
+                    st.warning("Please enter a skill name.")
 
         # Display and Remove Skills
-        for i, skill in enumerate(st.session_state.skills):
-            cols = st.columns([3, 1])  # Skill name and rating in one column, "Remove" button in the other
-            with cols[0]:
-                # Display the skill and stars
-                skill_html = render_skills([skill], layout_type=layout_type, star_color=text_color)
-                st.markdown(skill_html, unsafe_allow_html=True)
-            with cols[1]:
-                # Add a Remove button for each skill
-                if st.button("Remove", key=f"remove_skill_{i}"):
-                    st.session_state.skills.pop(i)
-                    st.rerun()  # Refresh the app to reflect the removal
+        if st.session_state.skills:
+            st.subheader("Your Skills")
+            for i, skill in enumerate(st.session_state.skills):
+                cols = st.columns([3, 1])  # Skill name and rating in one column, "Remove" button in the other
+                with cols[0]:
+                    # Display the skill and stars using the render_skills function
+                    skill_html = render_skills([skill], layout_type="Modern", star_color="blue")  # Adjust the star color dynamically if needed
+                    st.markdown(skill_html, unsafe_allow_html=True)
+                with cols[1]:
+                    # Add a Remove button for each skill
+                    if st.button("Remove", key=f"remove_skill_{i}"):
+                        st.session_state.skills.pop(i)  # Remove the selected skill
+                        st.rerun()  # Refresh the app to reflect the removal
+        else:
+            st.write("No skills added yet.")
 
     with right_col:
         # Live Preview
