@@ -496,7 +496,7 @@ elif st.session_state.page == 3:
                 cols = st.columns([3, 1])  # Skill name and rating in one column, "Remove" button in the other
                 with cols[0]:
                     # Display the skill and stars using the render_skills function
-                    skill_html = render_skills([skill], layout_type="Modern", star_color="blue")  # Adjust the star color dynamically if needed
+                    skill_html = render_skills([skill], layout_type, text_color)  # Adjust the star color dynamically if needed
                     st.markdown(skill_html, unsafe_allow_html=True)
                 with cols[1]:
                     # Add a Remove button for each skill
@@ -523,7 +523,7 @@ elif st.session_state.page == 3:
             </div>
             <p>{summary}</p>
             <h3>Skills</h3>
-            {render_skills(st.session_state.skills, layout_type)}
+            {render_skills(st.session_state.skills, layout_type,text_color)}
         </div>
         """, unsafe_allow_html=True)
 
@@ -712,7 +712,7 @@ elif st.session_state.page == 4:
                 </div>
                 <p>{professional_summary}</p>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 {render_fresher_projects(st.session_state.projects, theme_color, text_color, font_family)}
             """, unsafe_allow_html=True)
         elif experience_type == "Experienced" and st.session_state.work_experiences:
@@ -726,7 +726,7 @@ elif st.session_state.page == 4:
                 </div>
                 <p>{professional_summary}</p>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 {render_experienced_work(st.session_state.work_experiences, theme_color, text_color, font_family)}
             """, unsafe_allow_html=True)
         else:
@@ -740,7 +740,7 @@ elif st.session_state.page == 4:
                 </div>
                 <p>{professional_summary}</p>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
             """, unsafe_allow_html=True)
 
     # Navigation Buttons
@@ -761,7 +761,7 @@ elif st.session_state.page == 4:
                 </div>
                 <p>{professional_summary}</p>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 {render_fresher_projects(st.session_state.projects, theme_color, text_color, font_family)}
             </div>
             """
@@ -777,7 +777,7 @@ elif st.session_state.page == 4:
                 </div>
                 <p>{professional_summary}</p>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 {render_experienced_work(st.session_state.work_experiences, theme_color, text_color, font_family)}
             </div>
             """
