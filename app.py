@@ -39,7 +39,7 @@ def query_gpt(user_input):
 
     return response.content
 
-def render_skills(skills, layout_type, star_color="gold"):
+def render_skills(skills, layout_type, star_color):
     def generate_stars(rating, star_color):
         """Generates stars with full, partial, and empty fill based on rating."""
         stars_html = ""
