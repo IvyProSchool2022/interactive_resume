@@ -39,20 +39,29 @@ def query_gpt(user_input):
 
     return response.content
 
-def render_skills(skills, layout_type, star_color="gold"):
+def render_skills(skills, layout_type, star_color="gold", star_size="25px"):
+    def generate_stars(rating, star_color, star_size):
+        """Helper function to generate stars with a specific color and size."""
+        return ''.join([
+            f'<span style="color: {star_color}; font-size: {star_size};">⭐</span>'
+            for _ in range(rating)
+        ])
+
     if layout_type in ["Modern", "Creative"]:
+        # Render skills in a two-column layout
         skill_columns = [skills[i:i + 2] for i in range(0, len(skills), 2)]
         skills_html = ""
         for row in skill_columns:
-            skills_html += '<div style="display: flex; justify-content: space-between;">'
+            skills_html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;">'
             for skill in row:
-                stars = f'<span style="color: {star_color};">{"⭐" * skill["rating"]}</span>'
+                stars = generate_stars(skill["rating"], star_color, star_size)
                 skills_html += f'<div style="width: 48%;"><b>{skill["name"]}</b><br>{stars} ({skill["rating"]}/5)</div>'
             skills_html += "</div>"
         return skills_html
     else:
+        # Render skills in a simple list
         return "".join([
-            f'<p><b>{skill["name"]}</b><br><span style="color: {star_color};">{"⭐" * skill["rating"]}</span> ({skill["rating"]}/5)</p>'
+            f'<p style="margin-bottom: 10px;"><b>{skill["name"]}</b><br>{generate_stars(skill["rating"], star_color, star_size)} ({skill["rating"]}/5)</p>'
             for skill in skills
         ])
 
@@ -228,25 +237,6 @@ if st.session_state.page == 1:
             "Worked on developing scalable web applications using modern technologies."
         )
 
-        # Function to render skills dynamically
-        def render_skills(skills, layout_type):
-            if layout_type in ["Modern", "Creative"]:
-                # Two-column layout
-                skill_columns = [skills[i:i + 2] for i in range(0, len(skills), 2)]
-                skills_html = ""
-                for row in skill_columns:
-                    skills_html += '<div style="display: flex; justify-content: space-between;">'
-                    for skill in row:
-                        skills_html += f'<div style="width: 48%;"><b>{skill["name"]}</b><br>{"⭐" * skill["rating"]} ({skill["rating"]}/5)</div>'
-                    skills_html += "</div>"
-                return skills_html
-            else:
-                # Single-column layout
-                return "".join([
-                    f'<p><b>{skill["name"]}</b><br>{"⭐" * skill["rating"]} ({skill["rating"]}/5)</p>'
-                    for skill in skills
-                ])
-
         # Render preview based on layout
         if layout_type == "Modern":
             st.markdown(f"""
@@ -258,7 +248,7 @@ if st.session_state.page == 1:
                     <p style="text-align: right;">{email}</p>
                 </div>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 <h3>Education</h3>
                 <p>{education}</p>
                 <h3>Experience</h3>
@@ -276,7 +266,7 @@ if st.session_state.page == 1:
                     <p style="text-align: right;">{email}</p>
                 </div>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 <h3>Education</h3>
                 <p>{education}</p>
                 <h3>Experience</h3>
@@ -294,7 +284,7 @@ if st.session_state.page == 1:
                     <p style="text-align: right;">{email}</p>
                 </div>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 <h3>Education</h3>
                 <p>{education}</p>
                 <h3>Experience</h3>
@@ -312,7 +302,7 @@ if st.session_state.page == 1:
                     <p style="text-align: right;">{email}</p>
                 </div>
                 <h3>Skills</h3>
-                {render_skills(skills, layout_type)}
+                {render_skills(skills, layout_type,text_color)}
                 <h3>Education</h3>
                 <p>{education}</p>
                 <h3>Experience</h3>
@@ -472,14 +462,17 @@ elif st.session_state.page == 3:
                 st.session_state.skills.append({"name": skill_name, "rating": skill_rating})
 
         # Display and Remove Skills
-        st.markdown("### Your Skills")
         for i, skill in enumerate(st.session_state.skills):
             cols = st.columns([3, 1])  # Skill name and rating in one column, "Remove" button in the other
             with cols[0]:
-                st.write(f"{skill['name']} - {'⭐' * skill['rating']} ({skill['rating']}/5)")
+                # Display the skill and stars
+                skill_html = render_skills([skill], layout_type=layout_type, star_color=text_color)
+                st.markdown(skill_html, unsafe_allow_html=True)
             with cols[1]:
+                # Add a Remove button for each skill
                 if st.button("Remove", key=f"remove_skill_{i}"):
                     st.session_state.skills.pop(i)
+                    st.experimental_rerun()  # Refresh the app to reflect the removal
 
     with right_col:
         # Live Preview
