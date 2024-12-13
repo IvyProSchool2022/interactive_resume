@@ -10,6 +10,7 @@ from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 import os
 import re
 import requests
+API_KEY=os.getenv("API_KEY")
 
 def render_markdown_text(text):
     text = re.sub(r"^\s*-\s*", "", text, flags=re.MULTILINE)
