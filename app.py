@@ -84,27 +84,15 @@ def render_skills(skills, layout_type, star_color):
         skill_columns = [skills[i:i + 2] for i in range(0, len(skills), 2)]
         skills_html = star_styles  # Include styles at the top
         for row in skill_columns:
-            # Flex container for rows
-            skills_html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;">'
+            skills_html += '<div style="display: flex; justify-content: space-between;">'
             for skill in row:
                 stars = generate_stars(skill["rating"], star_color)
-                # Flex container for skill name and stars
-                skills_html += f"""
-                <div style="display: flex; align-items: center; width: 48%;">
-                    <b style="margin-right: 10px;">{skill["name"]}</b>
-                    <div>{stars} ({skill["rating"]}/5)</div>
-                </div>
-                """
+                skills_html += f'<div style="width: 48%;"><b>{skill["name"]}</b><br>{stars} ({skill["rating"]}/5)</div>'
             skills_html += "</div>"
         return skills_html
     else:
         return star_styles + "".join([
-            f"""
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <b style="margin-right: 10px;">{skill["name"]}</b>
-                <div>{generate_stars(skill["rating"], star_color)} ({skill["rating"]}/5)</div>
-            </div>
-            """
+            f'<p><b>{skill["name"]}</b><br>{generate_stars(skill["rating"], star_color)} ({skill["rating"]}/5)</p>'
             for skill in skills
         ])
 
