@@ -80,17 +80,33 @@ def render_skills(skills, layout_type, star_color):
     """
 
     # Build the skills HTML
-    skills_html = star_styles  # Include styles at the top
-    for skill in skills:
-        stars = generate_stars(skill["rating"], star_color)
-        # Align skill name and stars on the same line
-        skills_html += f"""
-        <div class="skill-container">
-            <div class="skill-name">{skill["name"]}</div>
-            <div>{stars} ({skill["rating"]}/5)</div>
-        </div>
-        """
-    return skills_html
+    if layout_type in ["Modern", "Creative"]:
+        skill_columns = [skills[i:i + 2] for i in range(0, len(skills), 2)]
+        skills_html = star_styles  # Include styles at the top
+        for row in skill_columns:
+            # Flex container for rows
+            skills_html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;">'
+            for skill in row:
+                stars = generate_stars(skill["rating"], star_color)
+                # Flex container for skill name and stars
+                skills_html += f"""
+                <div style="display: flex; align-items: center; width: 48%;">
+                    <b style="margin-right: 10px;">{skill["name"]}</b>
+                    <div>{stars} ({skill["rating"]}/5)</div>
+                </div>
+                """
+            skills_html += "</div>"
+        return skills_html
+    else:
+        return star_styles + "".join([
+            f"""
+            <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <b style="margin-right: 10px;">{skill["name"]}</b>
+                <div>{generate_stars(skill["rating"], star_color)} ({skill["rating"]}/5)</div>
+            </div>
+            """
+            for skill in skills
+        ])
 
 def render_fresher_projects(projects, theme_color, text_color, font_family):
     if not projects:
