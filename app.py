@@ -39,29 +39,50 @@ def query_gpt(user_input):
 
     return response.content
 
-def render_skills(skills, layout_type, star_color="gold", star_size="25px"):
-    def generate_stars(rating, star_color, star_size):
-        """Helper function to generate stars with a specific color and size."""
-        return ''.join([
-            f'<span style="color: {star_color}; font-size: {star_size};">⭐</span>'
-            for _ in range(rating)
-        ])
+def render_skills(skills, layout_type, star_color="gold"):
+    def generate_stars(rating, star_color):
+        """Generates stars with full, partial, and empty fill based on rating."""
+        stars_html = ""
+        for i in range(1, 6):  # Always render 5 stars
+            if rating >= i:
+                # Full star
+                stars_html += f'<span class="star" style="background: {star_color};"></span>'
+            elif i - rating < 1:
+                # Partial star
+                percentage = int((rating - (i - 1)) * 100)
+                stars_html += f'<span class="star" style="background: linear-gradient(90deg, {star_color} {percentage}%, lightgray {percentage}%);"></span>'
+            else:
+                # Empty star
+                stars_html += f'<span class="star" style="background: lightgray;"></span>'
+        return stars_html
 
+    # Define CSS styles for stars
+    star_styles = f"""
+    <style>
+        .star {{
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 2px;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }}
+    </style>
+    """
+
+    # Build the skills HTML
     if layout_type in ["Modern", "Creative"]:
-        # Render skills in a two-column layout
         skill_columns = [skills[i:i + 2] for i in range(0, len(skills), 2)]
-        skills_html = ""
+        skills_html = star_styles  # Include styles at the top
         for row in skill_columns:
-            skills_html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;">'
+            skills_html += '<div style="display: flex; justify-content: space-between;">'
             for skill in row:
-                stars = generate_stars(skill["rating"], star_color, star_size)
+                stars = generate_stars(skill["rating"], star_color)
                 skills_html += f'<div style="width: 48%;"><b>{skill["name"]}</b><br>{stars} ({skill["rating"]}/5)</div>'
             skills_html += "</div>"
         return skills_html
     else:
-        # Render skills in a simple list
-        return "".join([
-            f'<p style="margin-bottom: 10px;"><b>{skill["name"]}</b><br>{generate_stars(skill["rating"], star_color, star_size)} ({skill["rating"]}/5)</p>'
+        return star_styles + "".join([
+            f'<p><b>{skill["name"]}</b><br>{generate_stars(skill["rating"], star_color)} ({skill["rating"]}/5)</p>'
             for skill in skills
         ])
 
