@@ -105,6 +105,23 @@ def render_experienced_work(work_experiences, theme_color, text_color, font_fami
 def generate_pdf(data,font_family,text_color,theme_color):
     url = "https://api.pdf.co/v1/pdf/convert/from/html"
 
+    data += f"""
+    <div class="date-and-signature" style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-top: 40px; 
+        font-size: 12px;">
+        <div class="date" style="text-align: left;">
+            <strong>Date:</strong>
+        </div>
+        <div class="signature" style="text-align: center; flex: 1;">
+            <strong>Signature:</strong>
+        </div>
+    </div>
+    """
+
+    # Wrap the data in a complete HTML structure
     html_content = f"""
     <html>
     <head>
@@ -113,45 +130,16 @@ def generate_pdf(data,font_family,text_color,theme_color):
                 margin: 0; /* Remove margins for the entire page */
             }}
             body {{
-                margin: 0; 
+                margin: 20px; 
                 padding: 20px; 
                 font-family: {font_family}; 
                 color: {text_color};
                 background-color: {theme_color};
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                height: 100%;
-            }}
-            .footer {{
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                position: absolute;
-                bottom: 20px;
-                width: 90%;
-                padding: 0 5%;
-            }}
-            .date {{
-                text-align: left;
-                font-size: 12px;
-            }}
-            .signature {{
-                text-align: right;
-                font-size: 12px;
             }}
         </style>
     </head>
     <body>
         {data}
-        <div class="footer">
-            <div class="date">
-                <strong>Date:</strong>
-            </div>
-            <div class="signature">
-                <strong>Signature:</strong>
-            </div>
-        </div>
     </body>
     </html>
     """
