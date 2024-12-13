@@ -10,6 +10,7 @@ from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 import os
 import re
 import requests
+
 API_KEY=os.getenv("API_KEY")
 
 def render_markdown_text(text):
@@ -38,19 +39,20 @@ def query_gpt(user_input):
 
     return response.content
 
-def render_skills(skills, layout_type):
+def render_skills(skills, layout_type, star_color="gold"):
     if layout_type in ["Modern", "Creative"]:
         skill_columns = [skills[i:i + 2] for i in range(0, len(skills), 2)]
         skills_html = ""
         for row in skill_columns:
             skills_html += '<div style="display: flex; justify-content: space-between;">'
             for skill in row:
-                skills_html += f'<div style="width: 48%;"><b>{skill["name"]}</b><br>{"⭐" * skill["rating"]} ({skill["rating"]}/5)</div>'
+                stars = f'<span style="color: {star_color};">{"⭐" * skill["rating"]}</span>'
+                skills_html += f'<div style="width: 48%;"><b>{skill["name"]}</b><br>{stars} ({skill["rating"]}/5)</div>'
             skills_html += "</div>"
         return skills_html
     else:
         return "".join([
-            f'<p><b>{skill["name"]}</b><br>{"⭐" * skill["rating"]} ({skill["rating"]}/5)</p>'
+            f'<p><b>{skill["name"]}</b><br><span style="color: {star_color};">{"⭐" * skill["rating"]}</span> ({skill["rating"]}/5)</p>'
             for skill in skills
         ])
 
@@ -105,42 +107,26 @@ def render_experienced_work(work_experiences, theme_color, text_color, font_fami
 def generate_pdf(data,font_family,text_color,theme_color):
     url = "https://api.pdf.co/v1/pdf/convert/from/html"
 
-    data += f"""
-    <div class="date-and-signature" style="
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        margin-top: 40px; 
-        font-size: 12px;">
-        <div class="date" style="text-align: left;">
-            <strong>Date:</strong>
-        </div>
-        <div class="signature" style="text-align: center; flex: 1;">
-            <strong>Signature:</strong>
-        </div>
-    </div>
-    """
-
     # Wrap the data in a complete HTML structure
     html_content = f"""
     <html>
-    <head>
-        <style>
-            @page {{
-                margin: 0; /* Remove margins for the entire page */
-            }}
-            body {{
-                margin: 20px; 
-                padding: 20px; 
-                font-family: {font_family}; 
-                color: {text_color};
-                background-color: {theme_color};
-            }}
-        </style>
-    </head>
-    <body>
-        {data}
-    </body>
+        <head>
+            <style>
+                @page {{
+                    margin: 0; /* Remove margins for the entire page */
+                }}
+                body {{
+                    margin: 0; 
+                    padding: 0; 
+                    font-family: {font_family}; 
+                    color: {text_color};
+                    background-color: {theme_color};
+                }}
+            </style>
+        </head>
+        <body>
+            {data}
+        </body>
     </html>
     """
     payload = {
